@@ -1,4 +1,4 @@
-# nvim-llm
+# nvim-llm.nvim
 
 AI-Powered Chat and Code Assistance for Neovim
 
