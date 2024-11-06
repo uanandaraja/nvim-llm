@@ -1,14 +1,14 @@
-# 🤖 nvim-llm: AI-Powered Chat and Code Assistance for Neovim
+# nvim-llm
+
+AI-Powered Chat and Code Assistance for Neovim
 
 ## ✨ Features
 
-- Multiple LLM model support (Claude, GPT-4o, Gemini)
-- Streaming AI responses
-- File and URL context references
-- Error context integration
-- Session management
-- Configurable system prompts
-- OpenRouter API support
+- Use your preferred models. We use Open Router API so you can choose whatever model you like.
+- Add buffer(s) to the LLM context
+- Add url(s) to the LLM context
+- Add errors in the buffer(s) to the LLM context
+- Configure your own prompt
 
 ## 📦 Requirements
 
@@ -72,13 +72,6 @@ require('nvim-llm').setup({
 - Obtained from [OpenRouter](https://openrouter.ai/)
 - Securely stored in Neovim data directory
 - Can be updated anytime
-
-## 📝 Models Supported
-
-- Claude 3.5 Sonnet
-- GPT-4o
-- Gemini Pro 1.5
-- And whatever is served by OpenRouter
 
 ## 📄 License
 
