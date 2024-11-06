@@ -12,7 +12,7 @@ function M.setup(opts)
 	config.setup(opts)
 	ui.setup()
 
-	if not M.load_api_key() then
+	if not M.core.load_api_key() then
 		core.prompt_api_key()
 	end
 
