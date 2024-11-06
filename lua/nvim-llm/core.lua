@@ -235,7 +235,7 @@ function M.prompt_api_key(callback)
 		default_value = "",
 		on_submit = function(value)
 			if value and value ~= "" then
-				config.save_api_key(value)
+				M.save_api_key(value) -- Change this line
 				config.config.api_key = value
 				vim.env.OPENROUTER_API_KEY = value
 				vim.notify("API key saved", "info")
