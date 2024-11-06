@@ -3,6 +3,8 @@ local config = require("nvim-llm.config")
 local ui = require("nvim-llm.ui")
 local api = require("nvim-llm.api")
 local utils = require("nvim-llm.utils")
+local Menu = require("nui.menu")
+local event = require("nui.utils.autocmd").event
 
 local function create_or_get_buffer()
 	local bufnr = vim.fn.bufnr(config.config.bufname)
@@ -254,6 +256,19 @@ function M.save_api_key(key)
 	vim.fn.writefile({ key }, config_file)
 end
 
+function M.load_api_key()
+	local config_file = vim.fn.stdpath("data") .. "/openrouter_key"
+	if vim.fn.filereadable(config_file) == 1 then
+		local key = vim.fn.readfile(config_file)[1]
+		if key and key ~= "" then
+			config.config.api_key = key
+			vim.env.OPENROUTER_API_KEY = key
+			return true
+		end
+	end
+	return false
+end
+
 function M.setup_session_autocmds(bufnr)
 	vim.api.nvim_create_autocmd({ "BufUnload" }, {
 		buffer = bufnr,
@@ -284,6 +299,101 @@ function M.load_last_session(bufnr)
 		local lines = vim.fn.readfile(last_session)
 		vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
 	end
+end
+
+function M.show_buffer_picker()
+	local menu_items = {}
+	local buffers = utils.get_loaded_buffers()
+
+	for _, buf in ipairs(buffers) do
+		table.insert(menu_items, Menu.item(buf.text, { full_path = buf.name }))
+	end
+
+	local menu = Menu({
+		position = "50%",
+		size = {
+			width = 60,
+			height = math.min(#menu_items + 2, 20),
+		},
+		border = {
+			style = "rounded",
+			text = {
+				top = "[Select Buffer]",
+				top_align = "center",
+			},
+		},
+		win_options = {
+			winhighlight = "Normal:Normal,FloatBorder:Normal",
+		},
+	}, {
+		lines = menu_items,
+		max_width = 60,
+		keymap = {
+			focus_next = { "j", "<Down>", "<Tab>" },
+			focus_prev = { "k", "<Up>", "<S-Tab>" },
+			close = { "<Esc>", "<C-c>" },
+			submit = { "<CR>", "<Space>" },
+		},
+		on_submit = function(item)
+			M.add_file_reference(item.full_path)
+		end,
+	})
+
+	menu:mount()
+end
+
+-- Update show_error_buffer_picker
+function M.show_error_buffer_picker()
+	local buffers_with_errors = {}
+	local buffers = utils.get_loaded_buffers()
+
+	for _, buf in ipairs(buffers) do
+		local diagnostics = vim.diagnostic.get(buf.bufnr)
+		if #diagnostics > 0 then
+			table.insert(buffers_with_errors, {
+				text = string.format("%s (%d issues)", buf.text, #diagnostics),
+				bufnr = buf.bufnr,
+			})
+		end
+	end
+
+	if #buffers_with_errors == 0 then
+		vim.notify("No buffers with errors found", "warn")
+		return
+	end
+
+	local menu = Menu({
+		position = "50%",
+		size = {
+			width = 60,
+			height = math.min(#buffers_with_errors + 2, 20),
+		},
+		border = {
+			style = "rounded",
+			text = {
+				top = "[Select Buffer with Errors]",
+				top_align = "center",
+			},
+		},
+		win_options = {
+			winhighlight = "Normal:Normal,FloatBorder:Normal",
+		},
+	}, {
+		lines = vim.tbl_map(function(buf)
+			return Menu.item(buf.text, { bufnr = buf.bufnr })
+		end, buffers_with_errors),
+		keymap = {
+			focus_next = { "j", "<Down>", "<Tab>" },
+			focus_prev = { "k", "<Up>", "<S-Tab>" },
+			close = { "<Esc>", "<C-c>" },
+			submit = { "<CR>", "<Space>" },
+		},
+		on_submit = function(item)
+			M.add_error_reference(item.bufnr)
+		end,
+	})
+
+	menu:mount()
 end
 
 return M

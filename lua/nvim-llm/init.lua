@@ -9,12 +9,12 @@ local utils = require("nvim-llm.utils")
 
 function M.setup(opts)
 	opts = opts or {}
-
-	-- Initialize configuration
 	config.setup(opts)
-
-	-- Set up UI components and keymappings
 	ui.setup()
+
+	if not M.load_api_key() then
+		core.prompt_api_key()
+	end
 
 	-- Create user commands
 	vim.api.nvim_create_user_command("LLM", function()
