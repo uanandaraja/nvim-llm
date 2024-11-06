@@ -76,3 +76,7 @@ require('nvim-llm').setup({
 ## 📄 License
 
 Apache License
+
+## TODO in the future
+
+- Document the config better so people could do whatever they want
