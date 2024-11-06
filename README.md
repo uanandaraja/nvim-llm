@@ -25,7 +25,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    'uanandaraja/nvim-llm',
+    'uanandaraja/nvim-llm.nvim',
     dependencies = {
         'nvim-lua/plenary.nvim',
         'rcarriga/nvim-notify',
