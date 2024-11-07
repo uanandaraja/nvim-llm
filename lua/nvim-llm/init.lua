@@ -456,7 +456,7 @@ function M.setup(opts)
 		local content = {}
 		local context_lines = 2 -- lines before/after error
 		local file_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-		local filepath = vim.api.nvim_buf_get_name(bufnr)
+		local filepath = vim.api.envim_buf_get_name(bufnr)
 		local file_ext = vim.fn.fnamemodify(filepath, ":e")
 
 		for _, diag in ipairs(diagnostics) do
