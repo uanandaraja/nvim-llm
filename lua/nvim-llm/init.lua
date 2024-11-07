@@ -67,6 +67,44 @@ function M.setup(opts)
 		vim.fn.writefile({ key }, config_file)
 	end
 
+	local function prompt_api_key(callback)
+		local Input = require("nui.input")
+		local current_key = config.api_key or ""
+		local masked_key = current_key ~= "" and string.format("Current: ...%s", current_key:sub(-4))
+			or "No API key set"
+
+		local input = Input({
+			position = "50%",
+			size = { width = 60 },
+			border = {
+				style = "rounded",
+				text = {
+					top = "[OpenRouter API Key]",
+					top_align = "center",
+					bottom = masked_key,
+					bottom_align = "center",
+				},
+			},
+			win_options = {
+				winhighlight = "Normal:Normal,FloatBorder:Normal",
+			},
+		}, {
+			prompt = "> ",
+			default_value = "",
+			on_submit = function(value)
+				if value and value ~= "" then
+					save_api_key(value)
+					config.api_key = value
+					if callback then
+						callback()
+					end
+				end
+			end,
+		})
+
+		input:mount()
+	end
+
 	local function load_api_key()
 		local config_file = vim.fn.stdpath("data") .. "/openrouter_key"
 		if vim.fn.filereadable(config_file) == 1 then
@@ -600,9 +638,9 @@ function M.setup(opts)
 		if bufnr == -1 then
 			bufnr = vim.api.nvim_create_buf(false, true)
 			vim.api.nvim_buf_set_name(bufnr, config.bufname)
-			vim.api.nvim_buf_set_option(bufnr, "filetype", "markdown")
-			vim.api.nvim_buf_set_option(bufnr, "buftype", "nofile")
-			vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
+			vim.bo[bufnr].filetype = "markdown"
+			vim.bo[bufnr].buftype = "nofile"
+			vim.bo[bufnr].swapfile = false
 
 			-- Set up keymaps
 			local function map(mode, lhs, rhs, opts)
@@ -855,6 +893,18 @@ function M.setup(opts)
 	vim.keymap.set("n", "<leader>lp", function()
 		configure_system_prompt()
 	end, { desc = "Configure System Prompt" })
+
+	vim.api.nvim_create_user_command("LLMAPIKey", function()
+		prompt_api_key(function()
+			vim.notify("API key updated successfully", "info")
+		end)
+	end, {})
+
+	vim.keymap.set("n", "<leader>la", function()
+		prompt_api_key(function()
+			vim.notify("API key updated successfully", "info")
+		end)
+	end, { desc = "Change API Key" })
 
 	-- Store functions we want to expose
 	M.submit_prompt = submit_prompt
