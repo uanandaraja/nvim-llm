@@ -909,83 +909,102 @@ function M.setup(opts)
 
 	-- Register the keymap group
 	wk.register({
-		["l"] = {
-			name = "LLM",
-			o = { "<cmd>LLM<CR>", "Open LLM Chat" },
-			s = {
-				function()
-					submit_prompt()
-				end,
-				"Submit to LLM",
-			},
-			c = {
-				function()
-					local bufnr = vim.fn.bufnr(config.bufname)
-					if bufnr ~= -1 then
-						vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
-					end
-				end,
-				"Clear chat",
-			},
-			q = { "<cmd>quit<CR>", "Quit chat" },
-			f = {
-				function()
-					show_file_picker()
-				end,
-				"Add file reference",
-			},
-			b = {
-				function()
-					add_file_reference(vim.fn.expand("%:p"))
-				end,
-				"Add current buffer",
-			},
-			m = {
-				function()
-					select_model()
-				end,
-				"Select Model",
-			},
-			u = {
-				function()
-					local url = vim.fn.input({
-						prompt = "Enter URL: ",
-						default = "",
-					})
-					if url ~= "" then
-						add_url_reference(url)
-					end
-				end,
-				"Add URL reference",
-			},
-			e = {
-				function()
-					add_error_reference(vim.fn.bufnr())
-				end,
-				"Add errors from current buffer",
-			},
-			E = {
-				function()
-					show_error_buffer_picker()
-				end,
-				"Add errors from any buffer",
-			},
-			p = {
-				function()
-					configure_system_prompt()
-				end,
-				"Configure System Prompt",
-			},
-			a = {
-				function()
-					prompt_api_key(function()
-						vim.notify("API key updated successfully", "info")
-					end)
-				end,
-				"Change API Key",
-			},
+		{
+			"<leader>l",
+			group = "LLM",
 		},
-	}, { prefix = "<leader>" })
+		{
+			"<leader>lo",
+			"<cmd>LLM<CR>",
+			desc = "Open LLM Chat",
+		},
+		{
+			"<leader>ls",
+			function()
+				submit_prompt()
+			end,
+			desc = "Submit to LLM",
+		},
+		{
+			"<leader>lc",
+			function()
+				local bufnr = vim.fn.bufnr(config.bufname)
+				if bufnr ~= -1 then
+					vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+				end
+			end,
+			desc = "Clear chat",
+		},
+		{
+			"<leader>lq",
+			"<cmd>quit<CR>",
+			desc = "Quit chat",
+		},
+		{
+			"<leader>lf",
+			function()
+				show_file_picker()
+			end,
+			desc = "Add file reference",
+		},
+		{
+			"<leader>lb",
+			function()
+				add_file_reference(vim.fn.expand("%:p"))
+			end,
+			desc = "Add current buffer",
+		},
+		{
+			"<leader>lm",
+			function()
+				select_model()
+			end,
+			desc = "Select Model",
+		},
+		{
+			"<leader>lu",
+			function()
+				local url = vim.fn.input({
+					prompt = "Enter URL: ",
+					default = "",
+				})
+				if url ~= "" then
+					add_url_reference(url)
+				end
+			end,
+			desc = "Add URL reference",
+		},
+		{
+			"<leader>le",
+			function()
+				add_error_reference(vim.fn.bufnr())
+			end,
+			desc = "Add errors from current buffer",
+		},
+		{
+			"<leader>lE",
+			function()
+				show_error_buffer_picker()
+			end,
+			desc = "Add errors from any buffer",
+		},
+		{
+			"<leader>lp",
+			function()
+				configure_system_prompt()
+			end,
+			desc = "Configure System Prompt",
+		},
+		{
+			"<leader>la",
+			function()
+				prompt_api_key(function()
+					vim.notify("API key updated successfully", "info")
+				end)
+			end,
+			desc = "Change API Key",
+		},
+	})
 
 	-- Store functions we want to expose
 	M.submit_prompt = submit_prompt
