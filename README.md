@@ -25,13 +25,15 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    'uanandaraja/nvim-llm.nvim',
-    dependencies = {
-        'nvim-lua/plenary.nvim',
-        'rcarriga/nvim-notify',
-        'MunifTanjim/nui.nvim'
-    },
-    config = true
+  'uanandaraja/nvim-llm.nvim',
+  requires = {
+    'nvim-lua/plenary.nvim',
+    'rcarriga/nvim-notify',
+    'MunifTanjim/nui.nvim',
+  },
+  config = function()
+    require('nvim-llm').setup()
+  end
 }
 ```
 
