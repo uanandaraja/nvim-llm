@@ -908,82 +908,61 @@ function M.setup(opts)
 	end, { desc = "Change API Key" })
 
 	-- Register the keymap group
+
+	wk.setup({})
+
 	wk.register({
-		["<leader>l"] = {
-			name = "LLM",
-			o = { "<cmd>LLM<CR>", "Open LLM Chat" },
-			s = {
-				function()
-					submit_prompt()
-				end,
-				"Submit to LLM",
-			},
-			c = {
-				function()
-					local bufnr = vim.fn.bufnr(config.bufname)
-					if bufnr ~= -1 then
-						vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
-					end
-				end,
-				"Clear chat",
-			},
-			q = { "<cmd>quit<CR>", "Quit chat" },
-			f = {
-				function()
-					show_file_picker()
-				end,
-				"Add file reference",
-			},
-			b = {
-				function()
-					add_file_reference(vim.fn.expand("%:p"))
-				end,
-				"Add current buffer",
-			},
-			m = {
-				function()
-					select_model()
-				end,
-				"Select Model",
-			},
-			u = {
-				function()
-					local url = vim.fn.input({
-						prompt = "Enter URL: ",
-						default = "",
-					})
-					if url ~= "" then
-						add_url_reference(url)
-					end
-				end,
-				"Add URL reference",
-			},
-			e = {
-				function()
-					add_error_reference(vim.fn.bufnr())
-				end,
-				"Add errors from current buffer",
-			},
-			E = {
-				function()
-					show_error_buffer_picker()
-				end,
-				"Add errors from any buffer",
-			},
-			p = {
-				function()
-					configure_system_prompt()
-				end,
-				"Configure System Prompt",
-			},
-			a = {
-				function()
-					prompt_api_key(function()
-						vim.notify("API key updated successfully", "info")
-					end)
-				end,
-				"Change API Key",
-			},
+		["<leader>l"] = { name = "LLM" },
+	})
+
+	wk.register({
+		["<leader>lo"] = { "<cmd>LLM<CR>", "Open LLM Chat" },
+		["<leader>ls"] = { submit_prompt, "Submit to LLM" },
+		["<leader>lc"] = {
+			function()
+				local bufnr = vim.fn.bufnr(config.bufname)
+				if bufnr ~= -1 then
+					vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+				end
+			end,
+			"Clear chat",
+		},
+		["<leader>lq"] = { "<cmd>quit<CR>", "Quit chat" },
+		["<leader>lf"] = { show_file_picker, "Add file reference" },
+		["<leader>lb"] = {
+			function()
+				add_file_reference(vim.fn.expand("%:p"))
+			end,
+			"Add current buffer",
+		},
+		["<leader>lm"] = { select_model, "Select Model" },
+		["<leader>lu"] = {
+			function()
+				local url = vim.fn.input({
+					prompt = "Enter URL: ",
+					default = "",
+				})
+				if url ~= "" then
+					add_url_reference(url)
+				end
+			end,
+			"Add URL reference",
+		},
+		["<leader>le"] = {
+			function()
+				add_error_reference(vim.fn.bufnr())
+			end,
+			"Add errors from current buffer",
+		},
+		["<leader>lE"] = { show_error_buffer_picker, "Add errors from any buffer" },
+		["<leader>lp"] = { configure_system_prompt, "Configure System Prompt" },
+		["<leader>la"] = {
+			function()
+				prompt_api_key(function()
+					vim.notify("API key updated successfully", "info")
+				end)
+			end,
+			"Change API Key",
 		},
 	})
 
