@@ -963,7 +963,7 @@ function M.setup(opts)
 		end)
 	end, { desc = "Change API Key" })
 
-	vim.keymap.set("n", "<leader>lmu", add_user_model, { desc = "Add User Model" })
+	vim.keymap.set("n", "<leader>ll", add_user_model, { desc = "Add User Model" })
 
 	-- Register the keymap group
 
