@@ -994,7 +994,7 @@ function M.setup(opts)
 			"Add current buffer",
 		},
 		["<leader>lm"] = { select_model, "Select Model" },
-		["<leader>lmu"] = { add_user_model, "Add Another Model" },
+		["<leader>ll"] = { add_user_model, "Add Another Model" },
 		["<leader>lu"] = {
 			function()
 				local url = vim.fn.input({
