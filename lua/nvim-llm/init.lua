@@ -199,6 +199,58 @@ function M.setup(opts)
 		menu:on(event.BufLeave, menu.menu_props.on_close, { once = true })
 	end
 
+	local function add_user_model()
+		local Input = require("nui.input")
+		local input = Input({
+			position = "50%",
+			size = { width = 60 },
+			border = {
+				style = "rounded",
+				text = {
+					top = "[Add New Model]",
+					top_align = "center",
+				},
+			},
+			win_options = {
+				winhighlight = "Normal:Normal,FloatBorder:Normal",
+			},
+		}, {
+			prompt = "Model Name: ",
+			default_value = "",
+			on_submit = function(model_name)
+				if model_name and model_name ~= "" then
+					local Input = require("nui.input")
+					local input = Input({
+						position = "50%",
+						size = { width = 60 },
+						border = {
+							style = "rounded",
+							text = {
+								top = "[Add New Model ID]",
+								top_align = "center",
+							},
+						},
+						win_options = {
+							winhighlight = "Normal:Normal,FloatBorder:Normal",
+						},
+					}, {
+						prompt = "Model ID: ",
+						default_value = "",
+						on_submit = function(model_id)
+							if model_id and model_id ~= "" then
+								table.insert(config.models, { name = model_name, id = model_id })
+								save_config(config.system_prompt, config.default_model, config.models)
+								vim.notify("Model added: " .. model_name, "info")
+							end
+						end,
+					})
+					input:mount()
+				end
+			end,
+		})
+		input:mount()
+	end
+
 	local function configure_system_prompt()
 		local Popup = require("nui.popup")
 		local event = require("nui.utils.autocmd").event
@@ -911,6 +963,8 @@ function M.setup(opts)
 		end)
 	end, { desc = "Change API Key" })
 
+	vim.keymap.set("n", "<leader>lmu", add_user_model, { desc = "Add User Model" })
+
 	-- Register the keymap group
 
 	wk.setup({})
@@ -940,6 +994,7 @@ function M.setup(opts)
 			"Add current buffer",
 		},
 		["<leader>lm"] = { select_model, "Select Model" },
+		["<leader>lmu"] = { add_user_model, "Add Another Model" },
 		["<leader>lu"] = {
 			function()
 				local url = vim.fn.input({
