@@ -144,6 +144,10 @@ function M.setup(opts)
 				name = "Gemini Pro 1.5",
 				id = "google/gemini-pro-1.5-exp",
 			},
+			{
+				name = "Qwen 2.5 Coder",
+				id = "qwen/qwen-2.5-coder-32b-instruct",
+			},
 		},
 		site_url = "nvim-llm-plugin",
 		site_name = "nvim-llm",
